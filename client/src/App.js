@@ -7,25 +7,32 @@ import Login from './pages/login';
 import Alert from './components/alert/Alert';
 import Home from './pages/home'
 import Header from './components/header/Header';
+import StatusModal from './components/StatusModal';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { refreshToken } from './redux/actions/authAction';
+import { getPosts } from './redux/actions/postAction';
 
 function App() {
-  const { auth } = useSelector(state => state)
+  const { auth, status, modal } = useSelector(state => state)
   const  dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(refreshToken())
   },[dispatch])
 
+  useEffect(() => {
+    if(auth.token) dispatch(getPosts(auth.token))
+  }, [dispatch, auth.token])
+
   return (
     <Router>
       <Alert />
       <input type='checkbox' id='theme'/>
-      <div className="App">
+      <div className={`App ${(status || modal) && 'mode'}`}>
         <div className='main'> 
           { auth.token && <Header /> }
+          { status && <StatusModal /> }
           <Routes>
               <Route exact path='/' Component={auth.token ? Home : Login}/>
               <Route exact path='/register' Component={Register} />
