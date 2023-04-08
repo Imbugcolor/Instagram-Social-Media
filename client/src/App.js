@@ -12,17 +12,29 @@ import StatusModal from './components/StatusModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { refreshToken } from './redux/actions/authAction';
 import { getPosts } from './redux/actions/postAction';
+import { getSuggestions } from './redux/actions/suggestionsAction';
+
+import io from 'socket.io-client'
+import { GLOBALTYPES } from './redux/actions/globalTypes';
+import SocketClient from './SocketClient'
 
 function App() {
   const { auth, status, modal } = useSelector(state => state)
   const  dispatch = useDispatch()
 
+  // joinUser
   useEffect(() => {
     dispatch(refreshToken())
+    const socket = io()
+    dispatch({type: GLOBALTYPES.SOCKET, payload: socket})
+    return () => socket.close()
   },[dispatch])
 
   useEffect(() => {
-    if(auth.token) dispatch(getPosts(auth.token))
+    if(auth.token){
+      dispatch(getPosts(auth.token))
+      dispatch(getSuggestions(auth.token))
+    } 
   }, [dispatch, auth.token])
 
   return (
@@ -33,6 +45,7 @@ function App() {
         <div className='main'> 
           { auth.token && <Header /> }
           { status && <StatusModal /> }
+          { auth.token && <SocketClient />}
           <Routes>
               <Route exact path='/' Component={auth.token ? Home : Login}/>
               <Route exact path='/register' Component={Register} />
