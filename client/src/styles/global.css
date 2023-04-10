@@ -70,6 +70,9 @@ img {
 /*------------- MESSAGE -------------*/
 @import url('./message.css');
 
+/*------------- ICONS -------------*/
+@import url('./icons.css');
+
 /*------------- RESPONSIVE ------------*/
 @media (max-width: 768px) {
     .header .menu {

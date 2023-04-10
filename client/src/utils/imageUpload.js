@@ -25,7 +25,7 @@ export const imageUpload = async(images) => {
         formData.append('upload_preset', 'xidkdmid')
         formData.append('cloud_name', 'dnv2v2tiz')
 
-        const res = await fetch('https://api.cloudinary.com/v1_1/dnv2v2tiz/image/upload', {
+        const res = await fetch('https://api.cloudinary.com/v1_1/dnv2v2tiz/upload', {
             method: 'POST',
             body: formData
         })
