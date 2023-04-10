@@ -67,6 +67,9 @@ img {
 /*------------- POST THUMBNAIL -------------*/
 @import url('./post_thumb.css');
 
+/*------------- MESSAGE -------------*/
+@import url('./message.css');
+
 /*------------- RESPONSIVE ------------*/
 @media (max-width: 768px) {
     .header .menu {
@@ -99,6 +102,9 @@ img {
     }
     .header .logo h1 {
         font-size: 1.5rem;
+    }
+    .message {
+        height: calc(100vh - 150px);
     }
 }
 

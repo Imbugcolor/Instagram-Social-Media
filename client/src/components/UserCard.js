@@ -10,7 +10,7 @@ const UserCard = ({children, user, border, handleClose, setShowFollowers, setSho
       if(setShowFollowing) setShowFollowing(false)
   }
   return (
-    <div className={`d-flex p-2 align-item-center justify-content-between ${border}`}>
+    <div className={`d-flex p-2 align-items-center justify-content-between w-100 ${border}`}>
         <div>
           <Link to={`/profile/${user._id}`} onClick={handleCloseAll} className='d-flex align-item-center'>
             <Avatar src={user.avatar} size='big-avatar'/>
