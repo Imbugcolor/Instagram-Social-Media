@@ -29,7 +29,7 @@ const UserCard = ({children, user, border, handleClose, setShowFollowers, setSho
                             {user.text}
                         </div>
                         {
-                          user.media?.length > 0 && 
+                          user.media.length > 0 && 
                           <div>{user.media.length} <i className='fas fa-image' /></div>
                         }
                       </> : user.fullname
