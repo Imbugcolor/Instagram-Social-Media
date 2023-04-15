@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import UserCard from '../UserCard'
 import { useSelector, useDispatch } from 'react-redux'
 import { GLOBALTYPES } from '../../redux/actions/globalTypes'
 import { getDataAPI } from '../../utils/fetchData'
 import { useNavigate, useParams } from 'react-router-dom'
-import { addUser, getConversations } from '../../redux/actions/messageAction'
+import { MESS_TYPES, getConversations } from '../../redux/actions/messageAction'
 
 const LeftSide = () => {
-    const { auth, message } = useSelector(state => state)
+    const { auth, message, online } = useSelector(state => state)
     const dispatch = useDispatch()
 
     const [search, setSearch] = useState('')
@@ -15,6 +15,9 @@ const LeftSide = () => {
     
     const navigate = useNavigate()
     const { id } = useParams() 
+
+    const pageEnd = useRef()
+    const [page, setPage] = useState(0)
 
     const handleSearch = async(e) => {
         e.preventDefault()
@@ -32,7 +35,8 @@ const LeftSide = () => {
     const handleAddUser = (user) => {
         setSearch('')
         setSearchUsers([])
-        dispatch(addUser({user, message}))
+        dispatch({type: MESS_TYPES.ADD_USER, payload: {...user, text: '', media: []}})
+        dispatch({type: MESS_TYPES.CHECK_ONLINE_OFFLINE, payload: online})
         return navigate(`/message/${user._id}`)
     }
 
@@ -45,6 +49,30 @@ const LeftSide = () => {
         if(message.firstLoad) return;
         dispatch(getConversations({auth}))
     }, [dispatch, auth, message.firstLoad])
+
+    // Load More
+    useEffect(() => {
+        const observer = new IntersectionObserver(entries => {
+            if(entries[0].isIntersecting) {
+                setPage(p => p + 1)
+            }
+        }, {
+            threshold: 0.1
+        })
+
+        observer.observe(pageEnd.current)
+    },[setPage])
+
+    useEffect(() => {
+        if(message.resultUsers >= (page -1)*9 && page > 1){
+            dispatch(getConversations({auth, page}))
+        }
+    },[message.resultUsers, page, auth, dispatch])
+
+    // Check User Online - Offline
+    useEffect(() => {
+        if(message.firstLoad) dispatch({type: MESS_TYPES.CHECK_ONLINE_OFFLINE, payload: online})
+    },[online, message.firstLoad, dispatch])
 
     return (
     <>
@@ -76,7 +104,13 @@ const LeftSide = () => {
                         <div key={user._id} className={`message_user ${isActive(user)}`}
                         onClick={() => handleAddUser(user)}>
                              <UserCard user={user} msg={true}>
-                                <i className='fas fa-circle'/>
+                                {
+                                    user.online 
+                                    ?  <i className='fas fa-circle text-success'/> 
+                                    :  auth.user.following.find(item => 
+                                        item._id === user._id) && 
+                                        <i className='fas fa-circle'/> 
+                                }
                              </UserCard>
                         </div>
                     ))
@@ -84,6 +118,7 @@ const LeftSide = () => {
                 </>
             }
             
+            <button ref={pageEnd} style={{opacity: 0}}>Load More</button>
         </div>
     </>
   )
