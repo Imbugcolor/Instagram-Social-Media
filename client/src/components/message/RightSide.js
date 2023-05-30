@@ -11,7 +11,7 @@ import { addMessage, getMessages, loadMoreMessages, deleteConversation } from '.
 import LoadIcon from '../../images/loading.gif'
 
 const RightSide = () => {
-    const { auth, message, theme, socket } = useSelector(state => state)
+    const { auth, message, theme, socket, peer } = useSelector(state => state)
     const dispatch = useDispatch()
   
     const { id } = useParams()
@@ -139,8 +139,48 @@ const RightSide = () => {
     },[isLoadMore])
 
     const handleDeleteConversation = () => {
-        dispatch(deleteConversation({auth, id}))
-        return navigate('/message')
+        if(window.confirm('Do you want to delete?')){
+            dispatch(deleteConversation({auth, id}))
+            return navigate('/message')
+        }
+    }
+
+    //Call
+
+    const caller = ({video}) => {
+        const { _id, avatar, username, fullname } = user
+        
+        const msg = {
+            sender: auth.user._id,
+            recipient: _id,
+            avatar, username, fullname, video
+        }
+        dispatch({type: GLOBALTYPES.CALL, payload: msg })
+    }
+
+    const callUser = ({video}) => {
+        const {_id, avatar, username, fullname } = auth.user
+
+        const msg = {
+            sender: _id,
+            recipient: user._id,
+            avatar, username, fullname, video
+        }
+
+        if(peer.open) msg.peerId = peer._id
+
+        socket.emit('callUser', msg)
+
+    }
+
+    const handleAudioCall = () => {
+        caller({video: false})
+        callUser({video: false})
+    }
+
+    const handleVideoCall = () => {
+        caller({video: true})
+        callUser({video: true})
     }
 
     return (
@@ -149,8 +189,14 @@ const RightSide = () => {
                 {
                     user.length !== 0 &&
                     <UserCard user={user}> 
-                        <i className='fas fa-trash text-danger'
-                        onClick={handleDeleteConversation}/>
+                        <div>
+                            <i className='fas fa-phone-alt'
+                            onClick={handleAudioCall}/>
+                            <i className='fas fa-video mx-3'
+                            onClick={handleVideoCall}/>
+                            <i className='fas fa-trash text-danger'
+                            onClick={handleDeleteConversation}/>
+                        </div>
                     </UserCard>
                 }
             </div>
