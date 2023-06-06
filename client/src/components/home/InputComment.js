@@ -36,8 +36,9 @@ const InputComment = ({children, post, onReply, setOnReply}) => {
     return (
     <form className='card-footer comment_input' onSubmit={handleSubmit}>
         {children}
+        <Icons setContent={setContent} content={content} theme={theme}/>
         <input type='text' 
-        placeholder='Add your comments...'
+        placeholder='Add a comment...'
         value={content} onChange={e => setContent(e.target.value)}
         style={{
             filter: theme ? 'invert(1)' : 'invert(0)',
@@ -45,8 +46,7 @@ const InputComment = ({children, post, onReply, setOnReply}) => {
             background: theme ? 'rgba(0,0,0,.03)' : ''
         }}
         />
-        <Icons setContent={setContent} content={content} theme={theme}/>
-        <button type='submit' className='postBtn'>
+        <button type='submit' className='postBtn' style={{ opacity: content.length > 0 ? '1' : '0.5'}}>
             Post
         </button>
     </form>

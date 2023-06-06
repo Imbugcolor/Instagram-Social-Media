@@ -21,6 +21,8 @@ import SocketClient from './SocketClient'
 import { getNotifies } from './redux/actions/notifyAction';
 import CallModal from './components/message/CallModal';
 import Peer from 'peerjs'
+import LeftSidebar from './components/sidebar/LeftSidebar';
+
 
 function App() {
   const { auth, status, modal, call } = useSelector(state => state)
@@ -58,7 +60,7 @@ function App() {
   
   useEffect(() => {
     const newPeer = new Peer(undefined, {
-      host: '/', port: '3001'
+      path: '/', secure: true
     })
     dispatch({type: GLOBALTYPES.PEER, payload: newPeer})
   },[dispatch])
@@ -68,17 +70,25 @@ function App() {
       <Alert />
       <input type='checkbox' id='theme'/>
       <div className={`App ${(status || modal) && 'mode'}`}>
-        <div className='main'> 
-          { auth.token && <Header /> }
-          { status && <StatusModal /> }
-          { auth.token && <SocketClient />}
-          { call && <CallModal />}
-          <Routes>
-              <Route exact path='/' Component={auth.token ? Home : Login}/>
-              <Route exact path='/register' Component={Register} />
-              <Route exact path='/:page' element={<PrivateRouter component={PageRender}/>}/>
-              <Route exact path='/:page/:id' element={<PrivateRouter component={PageRender}/>}/>
-          </Routes>
+        <div className='row'> 
+          {
+            auth.token &&
+            <div className='left__sidebar col-md-3'>
+                <LeftSidebar />
+            </div> 
+          }
+          <div className={`main ${auth.token ? 'col-md-9 content_app' : ''}`}>
+            { auth.token && <Header /> }
+            { status && <StatusModal /> }
+            { auth.token && <SocketClient />}
+            { call && <CallModal />}
+            <Routes>
+                <Route exact path='/' Component={auth.token ? Home : Login}/>
+                <Route exact path='/register' Component={Register} />
+                <Route exact path='/:page' element={<PrivateRouter component={PageRender}/>}/>
+                <Route exact path='/:page/:id' element={<PrivateRouter component={PageRender}/>}/>
+            </Routes>
+          </div> 
         </div>
       </div>
     </Router>

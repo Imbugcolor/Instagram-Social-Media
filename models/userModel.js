@@ -65,7 +65,11 @@ const userSchema = new mongoose.Schema({
             ref: 'user'
         }
     ],
-    saved: [{type: mongoose.Types.ObjectId, ref: 'user'}]
+    saved: [{type: mongoose.Types.ObjectId, ref: 'user'}],
+    typeRegister: {
+        type: String,
+        default: 'normal'
+    }
 
 }, {
     timestamps: true

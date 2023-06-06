@@ -4,12 +4,15 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const SocketServer = require('./socketServer')
-const { PeerServer } = require('peer')
+const { ExpressPeerServer } = require('peer')
+const passport = require('passport')
+require('./middleware/github')
 
 const app = express()
 app.use(express.json())
 app.use(cors())
 app.use(cookieParser())
+app.use(passport.initialize())
 
 app.get('/', (req, res) => {
     res.json({msg: 'Hello'})
@@ -25,7 +28,7 @@ io.on('connection', socket => {
 })
 
 // Create peer server
-PeerServer({ port: 3001, path: '/'})
+ExpressPeerServer(http, { path: '/' })
 
 //Routes
 app.use('/api', require('./routes/authRouter'))

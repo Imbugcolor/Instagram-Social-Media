@@ -1,6 +1,18 @@
 const Users = require('../models/userModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const { OAuth2Client } = require("google-auth-library")
+const fetch = require('node-fetch')
+
+const client = new OAuth2Client(
+    `${process.env.GOOGLE_CLIENT_ID}`,
+    `${process.env.GOOGLE_CLIENT_SECRET}`,
+    'postmessage',
+)
+
+const clientID = `${process.env.GITHUB_CLIENT_ID}`
+
+const clientSecret = `${process.env.GITHUB_CLIENT_SECRET}`
 
 const authCtrl = {
     register: async(req, res) => {
@@ -29,7 +41,7 @@ const authCtrl = {
             res.cookie('refreshtoken', refresh_token, {
                 httpOnly: true,
                 path: '/api/refresh_token',
-                maxAge: 30*24*60*60*1000
+                maxAge: 30 * 24 * 60 * 60 * 1000
             })
           
             await newUser.save()
@@ -56,26 +68,139 @@ const authCtrl = {
 
             if(!user) return res.status(400).json({msg: "This email does not exists."})
 
-            const isMatch = await bcrypt.compare(password, user.password)
-            if(!isMatch) return res.status(400).json({msg: 'Password is incorrect.'})
+            if(user.typeRegister !== 'normal') return res.status(400).json({msg: `This account login with ${user.typeRegister}`})
 
-            const access_token = createAccessToken({id: user._id})
-            const refresh_token = createRefreshToken({id: user._id})
+            //if user exists
+            loginUser(user, password, res)
 
-            res.cookie('refreshtoken', refresh_token, {
-                httpOnly: true,
-                path: '/api/refresh_token',
-                maxAge: 30*24*60*60*1000
-            })
             
-            res.json({
-                msg: 'Login Success!',
-                access_token, 
-                user: {
-                    ...user._doc,
-                    password: ''
+        } catch (err) {
+            return res.status(500).json({msg: err.message})
+        }
+    },
+    googleLogin: async (req, res) => {
+        try {
+           
+            const { tokens }  = await client.getToken(req.body.code); 
+            
+            const { id_token } = tokens
+
+            if (id_token) {
+                const verify = await client.verifyIdToken({
+                    idToken: id_token , audience: `${process.env.GOOGLE_CLIENT_ID}`
+                })
+                
+                const { email, email_verified, name, picture } = verify.getPayload()
+                
+                if(!email_verified) return res.status(400).json({msg: 'Email verification failed.'})
+                
+                const password = email + 'your google secret password'
+                const passwordHash = await bcrypt.hash(password, 12)
+
+                const user = await Users.findOne({email})
+
+                if (user) {
+                    loginUser(user, password, res)
+                } else {
+                    const user = {
+                        fullname: name,
+                        username: email.slice(0, -10), 
+                        email, 
+                        password: passwordHash,
+                        avatar: picture, 
+                        typeRegister: 'google'
+                    }
+                    registerUser(user, res)
+                }
+            }
+
+        } catch (err) {
+            return res.status(500).json({msg: err.message})
+        }
+    },
+    githubAuth: async (req, res) => {
+        try {
+
+           const { username, displayName, photos } = req.user
+
+           const newEmail = `${username.toLowerCase()}@github.com`
+
+           const password = newEmail + 'your google secret password'
+
+           const passwordHash = await bcrypt.hash(password, 12)
+
+           const user = await Users.findOne({email: newEmail})
+
+                if (user) {
+                    loginUser(user, password, res)
+                } else {
+                    const user = {
+                        fullname: displayName,
+                        username: username, 
+                        email: newEmail, 
+                        password: passwordHash,
+                        avatar: photos[0].value, 
+                        typeRegister: 'github'
+                    }
+                    registerUser(user, res)
+                }
+
+        } catch (err) {
+            return res.status(500).json({msg: err.message})
+        }
+    },
+    githubLogin: async (req, res) => {
+        try {
+     
+            const { code } = req.body;
+
+            const URL = `https://github.com/login/oauth/access_token?client_id=${clientID}&client_secret=${clientSecret}&code=${code}`
+         
+            const data = await fetch(URL, {
+                method: 'POST',
+                body: JSON.stringify(code),
+                headers: { 'accept': 'application/json' }
+            })
+            .then(res => res.json())
+            .then(res => { return res })
+
+            const { access_token } = data;
+
+            if(!access_token) return res.status(400).json({msg: 'Github Authentication failed.'})
+
+            
+            const result = await fetch(`https://api.github.com/user`, {
+                headers: {
+                    'Authorization': `token ${access_token}`
                 }
             })
+            .then(res => res.json())
+            .then(res => { return res })
+
+            const { avatar_url, name, login } = result
+
+            const newEmail = `${login.toLowerCase()}@github.com`
+
+            const password = newEmail + 'your google secret password'
+
+            const passwordHash = await bcrypt.hash(password, 12)
+
+            const user = await Users.findOne({email: newEmail})
+
+                if (user) {
+                    loginUser(user, password, res)
+                } else {
+                    const user = {
+                        fullname: name,
+                        username: login, 
+                        email: newEmail, 
+                        password: passwordHash,
+                        avatar: avatar_url, 
+                        typeRegister: 'github'
+                    }
+                    registerUser(user, res)
+                }
+
         } catch (err) {
             return res.status(500).json({msg: err.message})
         }
@@ -122,6 +247,62 @@ const createAccessToken = (payload) => {
 
 const createRefreshToken = (payload) => {
     return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '30d'})
+}
+
+const loginUser = async (user, password, res) => {
+   
+    const isMatch = await bcrypt.compare(password, user.password)
+    
+    if(!isMatch) {
+        let msgError = user.typeRegister === 'normal' ? 
+        'Password is incorrect.' : 
+        `Password is incorrect. This account login with ${user.typeRegister}`
+       
+        return res.status(400).json({msg: msgError})
+    }
+
+    const access_token = createAccessToken({id: user._id})
+    const refresh_token = createRefreshToken({id: user._id}, res)
+
+    res.cookie('refreshtoken', refresh_token, {
+        httpOnly: true,
+        path: `/api/refresh_token`,
+        maxAge: 30 * 24 * 60 * 60 * 1000 //30days
+    })
+
+    res.json({
+        msg: 'Login Success!',
+        access_token, 
+        user: {
+            ...user._doc,
+            password: ''
+        }
+    })
+}
+
+const registerUser = async (user, res) => {
+    
+    const newUser = new Users(user)
+    
+    const access_token = createAccessToken({id: newUser._id})
+    const refresh_token = createRefreshToken({id: newUser._id}, res)
+
+    res.cookie('refreshtoken', refresh_token, {
+        httpOnly: true,
+        path: `/api/refresh_token`,
+        maxAge: 30 * 24 * 60 * 60 * 1000 //30days
+    })
+
+    await newUser.save()
+
+    res.json({
+        msg: 'Register Success!',
+        access_token, 
+        user: {
+            ...newUser._doc,
+            password: ''
+        }
+    })
 }
 
 module.exports = authCtrl

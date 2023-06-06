@@ -59,7 +59,7 @@
 }
 
 .posts .card_body-content .readMore {
-    color: crimson;
+    color: #0095F6;
     cursor: pointer;
 }
 
@@ -81,4 +81,8 @@
     height: 28px;
     transform: translate(5px, -5px);
     opacity: 0.9;
+}
+
+.posts .card-footer {
+    background-color: #fff;
 }

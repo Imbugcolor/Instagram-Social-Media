@@ -9,7 +9,7 @@ const Post = () => {
     const { id } = useParams()
     const [post, setPost] = useState([])
 
-    const { auth, detailPost } = useSelector(state => state)
+    const { auth, detailPost, theme } = useSelector(state => state)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -29,7 +29,7 @@ const Post = () => {
             }
             {
                 post.map(item => (
-                    <PostCard key={item._id} post={item}/>
+                    <PostCard key={item._id} post={item} theme={theme}/>
                 ))
             }
         </div>

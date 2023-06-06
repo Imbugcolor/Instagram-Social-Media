@@ -10,7 +10,7 @@ const Message = () => {
 
         <div className='col-md-8 px-0'>
             <div className='d-flex justify-content-center
-             align-items-center flex-column h-100'>
+             align-items-center flex-column h-100 right_mess'>
                 <i className='fab fa-facebook-messenger text-primary'
                 style={{fontSize: '5rem'}} />
                 <h4>Messenger</h4>

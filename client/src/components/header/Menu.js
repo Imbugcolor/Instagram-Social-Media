@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout } from '../../redux/actions/authAction'
@@ -16,10 +16,16 @@ const Menu = () => {
     const { auth, theme, notify } = useSelector(state => state)
     const dispatch = useDispatch()
     const { pathname } = useLocation()
+    const [numNewNoti, setNumNewNoti] = useState(0)
 
     const isActive = (pn) => {
         if(pn === pathname) return 'active'
     }
+
+    useEffect(() => {
+        const newNoti = notify.data.filter(msg => !msg.isRead)
+        setNumNewNoti(newNoti.length)
+    },[notify, setNumNewNoti])
 
   return (
     <div className="menu">
@@ -37,14 +43,15 @@ const Menu = () => {
                 <span className="nav-link position-relative" id="navbarDropdown" role="button" 
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span className='material-icons' 
-                    style={{color: notify.data.length > 0 ? 'crimson' : ''}}>
+                    style={{color: numNewNoti > 0 ? 'crimson' : ''}}>
                         favorite
                     </span>
 
-                    <span className='notify_length'>{notify.data.length}</span>
+                    <span className='notify_length'>{numNewNoti}</span>
 
                 </span> 
-                <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                <div className="dropdown-menu" aria-labelledby="navbarDropdown"
+                style={{transform: 'translateX(50px)'}}>
                     <NotifyModal />
                 </div>        
             </li>

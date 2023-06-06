@@ -72,11 +72,11 @@ export const loadMoreMessages = ({auth, id, page = 1}) => async(dispatch) => {
 }
 
 export const deleteMessages = ({ msg, data, auth }) => async (dispatch) => {
-    const newData = DeleteData(data, msg._id)
-    dispatch({type: MESS_TYPES.DELETE_MESSAGES, payload: {newData, _id: msg.recipient}})
     // socket.emit('deleteMessages', msg)
     try {
         await deleteDataAPI(`message/${msg._id}`, auth.token)
+        const newData = DeleteData(data, msg._id)
+        dispatch({type: MESS_TYPES.DELETE_MESSAGES, payload: {newData, _id: msg.recipient}})
     } catch (err) {
         dispatch({type: GLOBALTYPES.ALERT, payload: {error: err.response.data.msg}})    
     }

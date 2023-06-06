@@ -18,14 +18,15 @@ code {
     display: none;
 }
 
-#theme:checked~.App {
+#theme:checked~ .App {
     filter: invert(1);
 }
 
 .App {
     width: 100%;
     min-height: 100vh;
-    background: white;
+    background: #fafafa;
+    overflow-x: clip;
 }
 
 .main {
@@ -33,6 +34,10 @@ code {
     width: 100%;
     margin: auto;
     margin-bottom: 60px;
+}
+
+.content_app {
+    margin-left: 33%;
 }
 
 img {
@@ -76,8 +81,69 @@ img {
 /*------------- CALL MODAL -------------*/
 @import url('./call_modal.css');
 
+/*------------- CAROUSEL -------------*/
+@import url('./carousel.css');
+
+
+/*------------- CAROUSEL -------------*/
+@import url('./sidebar.css');
+
+/*------------- NOTIFICATIONS -------------*/
+@import url('./notifications.css');
+
+/*------------- SEARCH BAR -------------*/
+@import url('./searchbar.css');
+
 /*------------- RESPONSIVE ------------*/
+@media (max-width: 1499px) {
+    .content_app {
+        margin-left: 25%;
+    }
+
+    .menu__side_bar .title__menu {
+        display: none;
+    }
+
+    .left__sidebar {
+        width: 100px;
+    }
+
+    .menu__side_bar ul li {
+        width: 50px;
+        height: 70px;
+    }
+
+    .text__brand {
+        display: none;
+    }
+    
+    .logo__brand {
+        display: block;
+    }
+
+    .notifications__container {
+        border-left: none;
+        border-right: 1px solid #d5d2d3;
+    }
+}
+
+@media (max-width: 999px) {
+    .right__side_bar {
+        display: none;
+    }
+
+    .center__side {
+        flex: 1;
+        max-width: none;
+    }
+    
+}
+
 @media (max-width: 768px) {
+    .header {
+        display: block;
+    }
+    
     .header .menu {
         position: absolute;
         top: calc(100vh - 50px);
@@ -87,7 +153,6 @@ img {
         box-shadow: 0 0 10px #ddd;
         z-index: 2;
         background: #f8f9fa;
-        border: 1px solid rgb(0, 0, 0, .125)
     }
     .header .menu .navbar-nav {
         display: flex;
@@ -111,6 +176,15 @@ img {
     }
     .message {
         height: calc(100vh - 150px);
+    }
+    .right_mess, .left_mess {
+        display: none;
+    }
+    .left__sidebar {
+        display: none;
+    }
+    .content_app {
+        margin-left: 0;
     }
 }
 
