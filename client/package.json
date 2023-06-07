@@ -19,10 +19,12 @@
     "react-router-dom": "^6.9.0",
     "react-scripts": "5.0.1",
     "react-share": "^4.4.1",
+    "reapop": "^4.2.1",
     "redux": "^4.2.1",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.2",
     "socket.io-client": "^4.6.1",
+    "sweetalert2": "^11.7.11",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

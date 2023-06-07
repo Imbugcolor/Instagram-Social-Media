@@ -94,6 +94,9 @@ img {
 /*------------- SEARCH BAR -------------*/
 @import url('./searchbar.css');
 
+/*------------- POPUP BAR -------------*/
+@import url('./popup.css');
+
 /*------------- RESPONSIVE ------------*/
 @media (max-width: 1499px) {
     .content_app {

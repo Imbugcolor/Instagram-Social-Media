@@ -6,6 +6,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import LoadIcon from '../../images/loading.gif'
 import { getProfileUsers } from '../../redux/actions/profileAction'
 import { useParams } from 'react-router-dom'
+import { BsSignpostSplit, BsBookmark } from 'react-icons/bs'
+
 
 const Profile = () => {
   const { profile, auth } = useSelector(state => state)
@@ -27,8 +29,8 @@ const Profile = () => {
         {
           auth.user._id === id &&
           <div className='profile_tab'>
-              <button className={saveTab ? '' : 'active'} onClick={() => setSaveTab(false)}>Posts</button>
-              <button className={saveTab ? 'active' : ''} onClick={() => setSaveTab(true)}>Saved</button>
+              <button className={saveTab ? '' : 'active'} onClick={() => setSaveTab(false)}><BsSignpostSplit /> Posts</button>
+              <button className={saveTab ? 'active' : ''} onClick={() => setSaveTab(true)}><BsBookmark /> Saved</button>
           </div>
         }
         {

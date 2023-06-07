@@ -20,8 +20,10 @@ const StatusModal = () => {
 
     const handleChangeImages = (e) => {
         const files = [...e.target.files]
+        
         let err = ''
         let newImages = []
+        const types = ['image/png', 'image/jpeg', 'video/mp4', 'video/x-m4v', 'video/webm', 'video/m4v']
 
         files.forEach(file => {
             if(!file) return err = 'File does not exist.'
@@ -30,12 +32,17 @@ const StatusModal = () => {
                 return err = 'The image/video largest is 5mb.'
             }
 
+            if(!types.includes(file.type))
+                return err = 'The image/video is not support.'
+
             return newImages.push(file)
         })
 
         if(err) dispatch({type: GLOBALTYPES.ALERT, payload: {error: err}})
 
         setImages([...images, ...newImages])
+        
+        e.target.value = null
     }
 
     const deleteImages = (index) => {

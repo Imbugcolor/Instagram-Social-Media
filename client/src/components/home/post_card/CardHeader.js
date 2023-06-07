@@ -6,6 +6,7 @@ import moment from 'moment'
 import { GLOBALTYPES } from '../../../redux/actions/globalTypes'
 import { deletePost } from '../../../redux/actions/postAction'
 import { BASE_URL } from '../../../utils/config'
+import Swal from 'sweetalert2'
 
 const CardHeader = ({post}) => {
     const { auth, socket } = useSelector(state => state)
@@ -16,12 +17,28 @@ const CardHeader = ({post}) => {
     const handleEditPost = () => {
         dispatch({type: GLOBALTYPES.STATUS, payload: {...post, onEdit: true}})
     }
+
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn-ok',
+          cancelButton: 'btn-cancel-swal',
+          title: 'styleTitle'
+        },
+        buttonsStyling: false
+    })
     
     const handleDeletePost = () => {
-        if(window.confirm('Are you sure want to delete this post?')) {
-            dispatch(deletePost({post, auth, socket}))
-            return navigate('/')
-        }
+        swalWithBootstrapButtons.fire({
+            title: "Are you sure?",
+            showCancelButton: true,
+            confirmButtonText: "OK",
+            cancelButtonText: 'Cancel',
+          }).then((result) => {
+            if (result.isConfirmed) {
+                dispatch(deletePost({post, auth, socket}))
+                return navigate('/')
+            } 
+          })
     }
 
     const handleCopyLink = () => {
