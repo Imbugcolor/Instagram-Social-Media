@@ -1,20 +1,20 @@
 .message {
     width: 100%;
-    height: calc(100vh - 20px);
+    height: 100vh;
     border-radius: 3px;
-    background: #fbfbfb;
+    background: #fff;
     border: 1px solid #d5d2d3;
     border-top: none;
 }
 
 .message_header {
     width: 100%;
-    height: 60px;
+    height: 75px;
     border-bottom: 1px solid #ddd;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #f8f8f8;
+    background: #fff;
 }
 
 .message_header input {
@@ -26,9 +26,24 @@
     padding: 0 5px;
 }
 
+.message .new__msg_btn {
+    background: #0095f6;
+    border: none;
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.message__list_header {
+    font-size: 20px;
+    font-weight: 600;
+    padding: 0 15px;
+}
+
 .message_chat_list {
     width: 100%;
-    height: calc(100% - 60px);
+    height: calc(100% - 73px);
     overflow-y: auto;
 }
 
@@ -62,18 +77,28 @@
     color: forestgreen;
 }
 
+.options__message_header {
+    font-size: 23px;
+}
+
+.options__message_header svg {
+    margin: 0px 7px;
+}
+
 /*------------Chat Input--------------*/
 .chat_input {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 10px;
-    border-top: 1px solid #ddd;
+    padding: 0 15px;
+    border: 1px solid #ddd;
+    border-radius: 40px;
+    margin: 10px 10px 0 10px;
+    height: 49px;
 }
 
 .chat_input input {
     width: 100%;
-    height: 49px;
     border: none;
     outline: none;
 }
@@ -100,7 +125,7 @@
 .show_media {
     width: 100%;
     height: 70px;
-    overflow-y: hidden;
+    overflow-y: auto;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
     place-items: center;
@@ -108,6 +133,8 @@
     background: #f3f3f3;
     border-radius: 5px;
     padding: 0 5px;
+    position: absolute;
+    bottom: 65px;
 }
 
 .show_media #file_media {
@@ -143,7 +170,7 @@
 /* ---------- Chat Container --------------*/
 .chat_container {
     width: 100%;
-    height: calc(100% - 110px);
+    height: calc(100% - 140px);
     overflow-y: auto;
     padding: 0 10px;
 }
@@ -180,6 +207,8 @@
 .chat_time {
     font-size: 13px;
     color: #777;
+    width: 100%;
+    display: inline-block;
 }
 
 .you_message .chat_text {
@@ -198,22 +227,28 @@
 
 .chat_title {
     margin-bottom: 3px;
+    display: flex;
+    align-items: flex-end;
 }
 
 .you_content {
     position: relative;
+    width: fit-content;
 }
 
-.you_content .fa-trash {
+.you_content .unsend_msg {
     position: absolute;
     top: 50%;
-    left: -15px;
+    left: -55px;
     transform: translateY(-50%);
     cursor: pointer;
     font-size: 14px;
+    color: #666666;
+    font-weight: 500;
     opacity: 0;
+    transition: 0.1s;
 }
 
-.you_content:hover .fa-trash {
+.you_content:hover .unsend_msg {
     opacity: 1;
 }

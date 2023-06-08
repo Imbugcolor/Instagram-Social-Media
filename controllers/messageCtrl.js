@@ -1,5 +1,6 @@
 const Conversations = require('../models/conversationModel')
 const Messages = require('../models/messageModel')
+const Users = require('../models/userModel')
 
 class APIfeatures {
     constructor(query, queryString) {
@@ -22,7 +23,7 @@ const messageCtrl = {
             const { sender, recipient, text, media, call } = req.body
 
             if( !recipient || (!text.trim() && media.length === 0 && !call )) return;
-            
+ 
             const newConversation = await Conversations.findOneAndUpdate({
                 $or: [
                     { recipients: [sender, recipient] },
@@ -41,7 +42,10 @@ const messageCtrl = {
 
             await newMessage.save()
 
-            res.json({msg: 'Create Success!'})
+            res.json({
+                msg: 'Create Success!', 
+                newMsg: newMessage
+            })
 
         } catch (err) {
             return res.status(500).json({msg: err.message})

@@ -8,3 +8,9 @@
 .reactions span {
     margin: 3px 0;
 }
+
+.dropdown-menu.show {
+    background: #fff !important;
+    border: none !important;
+    box-shadow: 0 0 10px rgb(0 0 0 / 20%) !important;
+}

@@ -6,7 +6,7 @@ import moment from 'moment'
 import { GLOBALTYPES } from '../../../redux/actions/globalTypes'
 import { deletePost } from '../../../redux/actions/postAction'
 import { BASE_URL } from '../../../utils/config'
-import Swal from 'sweetalert2'
+import stylePopUpConfirm from '../../alert/Confirm'
 
 const CardHeader = ({post}) => {
     const { auth, socket } = useSelector(state => state)
@@ -18,17 +18,8 @@ const CardHeader = ({post}) => {
         dispatch({type: GLOBALTYPES.STATUS, payload: {...post, onEdit: true}})
     }
 
-    const swalWithBootstrapButtons = Swal.mixin({
-        customClass: {
-          confirmButton: 'btn-ok',
-          cancelButton: 'btn-cancel-swal',
-          title: 'styleTitle'
-        },
-        buttonsStyling: false
-    })
-    
     const handleDeletePost = () => {
-        swalWithBootstrapButtons.fire({
+        stylePopUpConfirm.fire({
             title: "Are you sure?",
             showCancelButton: true,
             confirmButtonText: "OK",

@@ -33,7 +33,6 @@ code {
     max-width: 1000px;
     width: 100%;
     margin: auto;
-    margin-bottom: 60px;
 }
 
 .content_app {
@@ -42,6 +41,10 @@ code {
 
 img {
     object-fit: cover;
+}
+
+button:focus {
+    outline: 0 !important;
 }
 
 
@@ -94,8 +97,11 @@ img {
 /*------------- SEARCH BAR -------------*/
 @import url('./searchbar.css');
 
-/*------------- POPUP BAR -------------*/
+/*------------- POPUP -------------*/
 @import url('./popup.css');
+
+/*------------- NEW MESSENGER MODAL -------------*/
+@import url('./newmsg.css');
 
 /*------------- RESPONSIVE ------------*/
 @media (max-width: 1499px) {
@@ -128,6 +134,10 @@ img {
         border-left: none;
         border-right: 1px solid #d5d2d3;
     }
+
+    .new__messenger_box {
+        margin: 25%;
+    }
 }
 
 @media (max-width: 999px) {
@@ -138,6 +148,10 @@ img {
     .center__side {
         flex: 1;
         max-width: none;
+    }
+
+    .new__messenger_box {
+        margin: 15%;
     }
     
 }
@@ -188,6 +202,10 @@ img {
     }
     .content_app {
         margin-left: 0;
+    }
+
+    .new__messenger_box {
+        margin: 5%;
     }
 }
 

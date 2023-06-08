@@ -9,6 +9,12 @@ import { imageShow, videoShow } from '../../utils/mediaShow'
 import { imageUpload } from '../../utils/imageUpload'
 import { addMessage, getMessages, loadMoreMessages, deleteConversation } from '../../redux/actions/messageAction'
 import LoadIcon from '../../images/loading.gif'
+import { getDataAPI } from '../../utils/fetchData'
+import { TbPhoto } from 'react-icons/tb'
+import { BsTelephone } from 'react-icons/bs'
+import { HiOutlineVideoCamera } from 'react-icons/hi2'
+import { MdDeleteOutline } from 'react-icons/md'
+import stylePopUpConfirm from '../alert/Confirm'
 
 const RightSide = () => {
     const { auth, message, theme, socket, peer } = useSelector(state => state)
@@ -84,6 +90,17 @@ const RightSide = () => {
         setLoadMedia(true)
 
         let newArr = [];
+
+        let isUserExist;
+        try {
+            isUserExist = await getDataAPI(`/user/${id}`, auth.token)
+        } catch (err) {
+            dispatch({ type: GLOBALTYPES.ALERT, payload: {error: err.response.data.msg}})
+            setLoadMedia(false)
+        }
+
+        if(!isUserExist) return;
+
         if(media.length > 0) newArr = await imageUpload(media)
 
         const msg = {
@@ -139,10 +156,17 @@ const RightSide = () => {
     },[isLoadMore])
 
     const handleDeleteConversation = () => {
-        if(window.confirm('Do you want to delete?')){
-            dispatch(deleteConversation({auth, id}))
-            return navigate('/message')
-        }
+        stylePopUpConfirm.fire({
+            title: "Are you sure?",
+            showCancelButton: true,
+            confirmButtonText: "OK",
+            cancelButtonText: 'Cancel',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                dispatch(deleteConversation({auth, id}))
+                return navigate('/message')
+            } 
+        })
     }
 
     //Call
@@ -189,12 +213,12 @@ const RightSide = () => {
                 {
                     user.length !== 0 &&
                     <UserCard user={user}> 
-                        <div>
-                            <i className='fas fa-phone-alt'
+                        <div className='options__message_header'>
+                            <BsTelephone
                             onClick={handleAudioCall}/>
-                            <i className='fas fa-video mx-3'
+                            <HiOutlineVideoCamera
                             onClick={handleVideoCall}/>
-                            <i className='fas fa-trash text-danger'
+                            <MdDeleteOutline
                             onClick={handleDeleteConversation}/>
                         </div>
                     </UserCard>
@@ -230,7 +254,7 @@ const RightSide = () => {
                     {
                         loadMedia && 
                         <div className='chat_row you_message'>
-                            <img src={LoadIcon} alt='loading'/>
+                            <img src={LoadIcon} alt='loading' style={{width: '28px', height: '28px'}}/>
                         </div>
                     }
                 </div>
@@ -252,6 +276,7 @@ const RightSide = () => {
             </div>
 
             <form className='chat_input' onSubmit={handleSubmit}>
+                <Icons setContent={setText} content={text} theme={theme}/>
                 <input type='text' 
                 placeholder='Enter you message...'
                 value={text} onChange={e => setText(e.target.value)}
@@ -262,15 +287,12 @@ const RightSide = () => {
                 }}
                 />
 
-                <Icons setContent={setText} content={text} theme={theme}/>
-
-                <div className='file_upload'>
-                    <i className='fas fa-image text-danger' 
-                    style={{filter: theme ? 'invert(1)' : 'invert(0)'}}
-                    />
+                <div className='file_upload'>            
+                    <TbPhoto style={{fontSize: '26px', marginRight: '10px'}}/>
                     <input type='file' name='file' id='file'
                     multiple accept='image/*, video/*' onChange={handleChangeMedia}/>
                 </div>
+
                 <button type='submit' className='material-icons'
                 disabled={(text || media.length > 0) ? false : true}>
                     near_me

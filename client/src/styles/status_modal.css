@@ -50,6 +50,7 @@
 }
 
 .status_body .input_images i {
+    color: #474747;
     font-size: 2rem;
     cursor: pointer;
 }
@@ -121,4 +122,12 @@
 
 .status_body .dropdown-menu {
     transform: translate3d(-153px, -190px, 0px) !important;
+}
+
+.post__status_btn {
+    background: #0095F6;
+    border: none;
+    border-radius: 8px;
+    height: 40px;
+    color: #fff;
 }
