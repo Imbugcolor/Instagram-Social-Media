@@ -40,6 +40,8 @@ const authCtrl = {
 
             res.cookie('refreshtoken', refresh_token, {
                 httpOnly: true,
+                domain: 'vyviegram.onrender.com', 
+                secure: true,
                 path: '/api/refresh_token',
                 maxAge: 30 * 24 * 60 * 60 * 1000
             })
@@ -266,6 +268,8 @@ const loginUser = async (user, password, res) => {
 
     res.cookie('refreshtoken', refresh_token, {
         httpOnly: true,
+        domain: 'vyviegram.onrender.com', 
+        secure: true,
         path: `/api/refresh_token`,
         maxAge: 30 * 24 * 60 * 60 * 1000 //30days
     })
@@ -289,6 +293,8 @@ const registerUser = async (user, res) => {
 
     res.cookie('refreshtoken', refresh_token, {
         httpOnly: true,
+        domain: 'vyviegram.onrender.com', 
+        secure: true,
         path: `/api/refresh_token`,
         maxAge: 30 * 24 * 60 * 60 * 1000 //30days
     })
