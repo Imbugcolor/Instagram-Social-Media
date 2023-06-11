@@ -15,10 +15,11 @@ export const MESS_TYPES = {
 export const addMessage = ({msg, auth, socket}) => async(dispatch) => {
     // dispatch({type: MESS_TYPES.ADD_MESSAGE, payload: msg})
     const { _id, avatar, fullname, username } = auth.user
-    socket.emit('addMessage', {...msg, user: {_id, avatar, fullname, username}})
+    // socket.emit('addMessage', {...msg, user: {_id, avatar, fullname, username}})
     try {
         const res = await postDataAPI('message', msg, auth.token)
         dispatch({type: MESS_TYPES.ADD_MESSAGE, payload: res.data.newMsg})
+        socket.emit('addMessage', {...res.data.newMsg, user: {_id, avatar, fullname, username}})
     } catch (err) {
         dispatch({type: GLOBALTYPES.ALERT, payload: {error: err.response.data.msg}})
     }
@@ -72,12 +73,13 @@ export const loadMoreMessages = ({auth, id, page = 1}) => async(dispatch) => {
     }
 }
 
-export const deleteMessages = ({ msg, data, auth }) => async (dispatch) => {
-    // socket.emit('deleteMessages', msg)
+export const deleteMessages = ({ msg, data, auth, socket }) => async (dispatch) => {
     try {
         await deleteDataAPI(`message/${msg._id}`, auth.token)
         const newData = DeleteData(data, msg._id)
         dispatch({type: MESS_TYPES.DELETE_MESSAGES, payload: {newData, _id: msg.recipient}})
+
+        socket.emit('deleteMessages', { newData, user: auth.user._id, recipient: msg.recipient })
     } catch (err) {
         dispatch({type: GLOBALTYPES.ALERT, payload: {error: err.response.data.msg}})    
     }

@@ -23,8 +23,25 @@
 }
 
 /* --------------- POSTS ------------- */
+.posts {
+    margin-bottom: 25px;
+}
+
 .posts .card {
     box-shadow: 0 0 4px #ddd;
+}
+
+.seen__all_posts {
+    text-align: center;
+    border-top: 1px solid #d5d3d2;
+    border-bottom: 1px solid #d5d3d2;
+    padding: 55px 0;
+    margin-top: 25px;
+}
+
+.seen__all_posts img {
+    width: 96px;
+    margin-bottom: 15px;
 }
 
 /* -------------- POST CARD HEADER ------------- */

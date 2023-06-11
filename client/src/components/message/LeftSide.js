@@ -9,9 +9,6 @@ import NewMessenger from './NewMessenger'
 const LeftSide = () => {
     const { auth, message, online } = useSelector(state => state)
     const dispatch = useDispatch()
-
-    // const [search, setSearch] = useState('')
-    // const [searchUsers, setSearchUsers] = useState([])
     
     const navigate = useNavigate()
     const { id } = useParams() 
@@ -21,22 +18,7 @@ const LeftSide = () => {
 
     const [openNewMsg, setOpenNewMsg] = useState(false)
 
-    // const handleSearch = async(e) => {
-    //     e.preventDefault()
-    //     if(!search) return setSearchUsers([]);
-    //     try {
-    //         const res = await getDataAPI(`search?username=${search}`, auth.token)
-    //         setSearchUsers(res.data.users)
-    //     } catch (err) {
-    //         dispatch({
-    //             type: GLOBALTYPES.ALERT, payload: {error: err.response.data.msg}
-    //         })
-    //     }
-    // }
-
     const handleAddUser = (user) => {
-        // setSearch('')
-        // setSearchUsers([])
         dispatch({type: MESS_TYPES.ADD_USER, payload: {...user, text: '', media: []}})
         dispatch({type: MESS_TYPES.CHECK_ONLINE_OFFLINE, payload: online})
         return navigate(`/message/${user._id}`)
@@ -78,13 +60,7 @@ const LeftSide = () => {
 
     return (
     <>
-        {/* <form className='message_header' onSubmit={handleSearch}>
-            <input type='text' value={search}
-            placeholder='Enter to Search...'
-            onChange={e => setSearch(e.target.value)}
-            />
-            <button type='submit' style={{display: 'none'}}>Search</button>
-        </form> */}
+   
         <div className='message__list_header'>
             <div className='d-flex justify-content-between align-items-center' 
             style={{height: '74px'}}>

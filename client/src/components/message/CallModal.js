@@ -87,7 +87,7 @@ const CallModal = () => {
         })
 
         return () => socket.off('endCallToClient')
-    },[socket, dispatch, tracks, newCall])
+    },[socket, dispatch, tracks, addCallMessage, newCall])
 
     // Stream Media 
     const openStream = (video) => {
@@ -161,7 +161,7 @@ const CallModal = () => {
         })
 
         return () => socket.off('callerDisconnect')
-    },[socket, tracks, dispatch, addCallMessage, answer, total, newCall])
+    },[socket, tracks, dispatch, call, addCallMessage, answer, total, newCall])
 
     // Play - Pause Audio
     const playAudio = (newAudio) => {
@@ -251,7 +251,7 @@ const CallModal = () => {
                 filter: theme ? 'invert(1)' : 'invert(0)'
             }}>
                 <video ref={youVideo} className='you_video' playsInline muted/>
-                <video ref={otherVideo} className='other_video' playsInline/>
+                <video ref={otherVideo} className='other_video' playsInline />
                 <div className='time_video'>
                     <span>{hours.toString().length < 2 ? '0' + hours: hours}</span>
                     <span>{mins.toString().length < 2 ? '0' + mins: mins}</span>

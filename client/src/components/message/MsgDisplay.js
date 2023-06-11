@@ -7,7 +7,7 @@ import Times from './Times'
 import stylePopUpConfirm from '../alert/Confirm'
 
 const MsgDisplay = ({user, msg, theme, data}) => {
-  const { auth } = useSelector(state => state)
+  const { auth, socket } = useSelector(state => state)
   const dispatch = useDispatch()
 
   const handleDeleteMessages = () => {
@@ -19,7 +19,7 @@ const MsgDisplay = ({user, msg, theme, data}) => {
           cancelButtonText: 'Cancel',
       }).then((result) => {
           if (result.isConfirmed) {
-            dispatch(deleteMessages({msg, data, auth}))
+            dispatch(deleteMessages({msg, data, auth, socket}))
           } 
       })
   }
@@ -73,7 +73,13 @@ const MsgDisplay = ({user, msg, theme, data}) => {
                         </span>
 
                         <div className='text-left'>
-                            <h6>{msg.call.video ? 'Video Call' : 'Audio Call'}</h6>
+                            <h6>
+                              {
+                                msg.call.times === 0 ?
+                                msg.call.video ? 'Missed video call' : 'Missed audio call' :
+                                msg.call.video ? 'Video call ended' : 'Audio call ended'
+                              }
+                            </h6>
                             <small>
                                 {
                                   msg.call.times > 0 ?

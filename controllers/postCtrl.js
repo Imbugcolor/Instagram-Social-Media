@@ -44,6 +44,10 @@ const postCtrl = {
     },
     getPosts: async (req, res) => {
         try {
+            const total = await Posts.find({
+                user: [...req.user.following, req.user._id]
+            })
+
             const features = new APIfeatures(Posts.find({
                 user: [...req.user.following, req.user._id]
             }), req.query).paginating()
@@ -61,7 +65,8 @@ const postCtrl = {
             res.json({
                 msg: 'Success!',
                 result: posts.length,
-                posts
+                posts,
+                total: total.length
             })
         } catch (err) {
             return res.status(500).json({msg: err.message})

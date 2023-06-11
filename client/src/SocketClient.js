@@ -145,16 +145,13 @@ const SocketClient = () => {
         return () => socket.off('addMessageToClient')
     },[socket, dispatch])
 
-    // useEffect(() => {
-    //     socket.on('deleteMessagesToClient', msg => {
-    //         const { messages } = message.data.find(item => item._id === msg.sender)
-    //         const newData = DeleteData(messages, msg._id)
-    //         console.log(newData)
-    //         dispatch({type: MESS_TYPES.DELETE_MESSAGES, payload: {newData, _id: msg.sender}})
-    //     })
+    useEffect(() => {
+        socket.on('deleteMessagesToClient', data => {
+            dispatch({type: MESS_TYPES.DELETE_MESSAGES, payload: { newData: data.newData, _id: data.user }})
+        })
 
-    //     return () => socket.off('deleteMessagesToClient')
-    // },[socket, dispatch, message.data])
+        return () => socket.off('deleteMessagesToClient')
+    },[socket, dispatch])
 
     // Check user online / offline
     useEffect(() => {

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import Avatar from '../Avatar'
-import EditProfile from './EditProfile'
 import FollowBtn from '../FollowBtn'
 import Followers from './Followers'
 import Following from './Following'
@@ -10,7 +9,6 @@ import { Link } from 'react-router-dom'
 const Info = ({id, auth, profile, dispatch}) => {
 
   const [userData, setUserData] = useState([])
-  const [onEdit, setOnEdit] = useState(false)
 
   const [showFollowers, setShowFollowers] = useState(false)
   const [showFollowing, setShowFollowing] = useState(false)
@@ -26,8 +24,8 @@ const Info = ({id, auth, profile, dispatch}) => {
 
         let followByUser = []
         if(newData) {
-            auth.user.following.map(following => {
-                newData[0]?.followers?.map(follower => {
+            auth.user.following.forEach(following => {
+                newData[0]?.followers?.forEach(follower => {
                     if(follower._id === following._id)
                     followByUser.push(following)
                 })
@@ -40,12 +38,12 @@ const Info = ({id, auth, profile, dispatch}) => {
   }, [id, auth, dispatch, profile.users])
 
   useEffect(() => {
-    if(showFollowers || showFollowing || onEdit) {
+    if(showFollowers || showFollowing ) {
         dispatch({type: GLOBALTYPES.MODAL, payload: true})
     } else {
         dispatch({type: GLOBALTYPES.MODAL, payload: false})
     }
-  },[showFollowers, showFollowing, onEdit, dispatch])
+  },[showFollowers, showFollowing, dispatch])
 
   
   return (
@@ -59,9 +57,9 @@ const Info = ({id, auth, profile, dispatch}) => {
                             <h2>{user.username}</h2>
                             {
                                 user._id === auth.user._id ? 
-                                <button className='edit__profile_btn' onClick={() => setOnEdit(true)}>
+                                <Link className='edit__profile_btn' to={'/edit'}>
                                     Edit profile
-                                </button> :
+                                </Link> :
                                 <FollowBtn user={user}/>
                             }
                         </div>
@@ -104,9 +102,6 @@ const Info = ({id, auth, profile, dispatch}) => {
                             </div>
                         }
                     </div>
-                        {
-                            onEdit && <EditProfile setOnEdit={setOnEdit}/>
-                        }
                         {
                             showFollowers && 
                             <Followers 

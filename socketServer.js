@@ -132,10 +132,10 @@ const SocketServer = (socket) => {
         user && socket.to(`${user.socketId}`).emit('addMessageToClient', msg)
     })
     
-    // socket.on('deleteMessages', msg => {
-    //     const user = users.find(user => user.id === msg.recipient)
-    //     user && socket.to(`${user.socketId}`).emit('deleteMessagesToClient', msg)
-    // })
+    socket.on('deleteMessages', data => {
+        const user = users.find( user => user.id === data.recipient )
+        user && socket.to(`${user.socketId}`).emit('deleteMessagesToClient', data)
+    })
 
     // Check user online / offline
    

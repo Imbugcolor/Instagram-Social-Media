@@ -56,7 +56,7 @@ export const getPosts = (token) => async (dispatch) => {
       
         dispatch({
             type: POST_TYPES.GET_POSTS,
-            payload: {...res.data, page: 2}
+            payload: {...res.data, page: 2, total: res.data.total}
         })
         dispatch({type: POST_TYPES.LOADING_POST, payload: false})
     } catch (err) {
