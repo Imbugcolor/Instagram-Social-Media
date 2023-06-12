@@ -21,11 +21,7 @@ app.get('/', (req, res) => {
 
 //Socket
 const http = require('http').createServer(app)
-const io = require('socket.io')(http, {
-    cors: {
-        origin: "*"
-    }
-})
+const io = require('socket.io')(http)
 
 
 io.on('connection', socket => {

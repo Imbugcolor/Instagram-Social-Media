@@ -40,8 +40,6 @@ const authCtrl = {
 
             res.cookie('refreshtoken', refresh_token, {
                 httpOnly: true,
-                domain: 'vyviegram.onrender.com', 
-                secure: true,
                 path: '/api/refresh_token',
                 maxAge: 30 * 24 * 60 * 60 * 1000
             })
@@ -220,7 +218,7 @@ const authCtrl = {
     generateAccessToken: async(req, res) => {
         try {
             const rf_token = req.cookies.refreshtoken
-            if(!rf_token) return res.status(400).json({msg: 'Can not get refreshtoken in cookie'})
+            if(!rf_token) return res.status(400).json({msg: 'Can not get refreshtoken in cookie.'})
             
             jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, async(err, result) => {
                 if(err) return res.status(400).json({msg: 'Please login now.'})
@@ -268,8 +266,6 @@ const loginUser = async (user, password, res) => {
 
     res.cookie('refreshtoken', refresh_token, {
         httpOnly: true,
-        domain: 'vyviegram.onrender.com', 
-        secure: true,
         path: `/api/refresh_token`,
         maxAge: 30 * 24 * 60 * 60 * 1000 //30days
     })
@@ -293,8 +289,6 @@ const registerUser = async (user, res) => {
 
     res.cookie('refreshtoken', refresh_token, {
         httpOnly: true,
-        domain: '.onrender.com', 
-        secure: true,
         path: `/api/refresh_token`,
         maxAge: 30 * 24 * 60 * 60 * 1000 //30days
     })
