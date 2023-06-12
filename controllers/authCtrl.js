@@ -220,7 +220,7 @@ const authCtrl = {
     generateAccessToken: async(req, res) => {
         try {
             const rf_token = req.cookies.refreshtoken
-            if(!rf_token) return res.status(400).json({msg: 'Please login now.'})
+            if(!rf_token) return res.status(400).json({msg: 'Can not get refreshtoken in cookie'})
             
             jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, async(err, result) => {
                 if(err) return res.status(400).json({msg: 'Please login now.'})
