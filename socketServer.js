@@ -39,10 +39,15 @@ const SocketServer = (socket) => {
 
     // likes
     socket.on('likePost', newPost => {
-        const ids = [...newPost.user.followers, newPost.user._id]
-        const clients = users.filter(user => ids.includes(user.id))
-        if(clients.length > 0){
-            clients.forEach(client => {
+        // const ids = [...newPost.user.followers, newPost.user._id]
+        // const clients = users.filter(user => ids.includes(user.id))
+        // if(clients.length > 0){
+        //     clients.forEach(client => {
+        //         socket.to(`${client.socketId}`).emit('likeToClient', newPost)
+        //     })
+        // }
+        if(users.length > 0) {
+            users.forEach(client => {
                 socket.to(`${client.socketId}`).emit('likeToClient', newPost)
             })
         }
@@ -50,10 +55,8 @@ const SocketServer = (socket) => {
 
     // unlikes
     socket.on('unLikePost', newPost => {
-        const ids = [...newPost.user.followers, newPost.user._id]
-        const clients = users.filter(user => ids.includes(user.id))
-        if(clients.length > 0){
-            clients.forEach(client => {
+        if(users.length > 0) {
+            users.forEach(client => {
                 socket.to(`${client.socketId}`).emit('unLikeToClient', newPost)
             })
         }
@@ -61,10 +64,8 @@ const SocketServer = (socket) => {
 
     // Comments
     socket.on('createComment', newPost => {
-        const ids = [...newPost.user.followers, newPost.user._id]
-        const clients = users.filter(user => ids.includes(user.id))
-        if(clients.length > 0){
-            clients.forEach(client => {
+        if(users.length > 0) {
+            users.forEach(client => {
                 socket.to(`${client.socketId}`).emit('createCommentToClient', newPost)
             })
         }
@@ -72,10 +73,8 @@ const SocketServer = (socket) => {
 
     // Delete Comment
     socket.on('deleteComment', newPost => {
-        const ids = [...newPost.user.followers, newPost.user._id]
-        const clients = users.filter(user => ids.includes(user.id))
-        if(clients.length > 0){
-            clients.forEach(client => {
+        if(users.length > 0) {
+            users.forEach(client => {
                 socket.to(`${client.socketId}`).emit('deleteCommentToClient', newPost)
             })
         }
@@ -135,6 +134,12 @@ const SocketServer = (socket) => {
     socket.on('deleteMessages', data => {
         const user = users.find( user => user.id === data.recipient )
         user && socket.to(`${user.socketId}`).emit('deleteMessagesToClient', data)
+    })
+
+    // Typing Message
+    socket.on('typing', data => {
+        const user = users.find( user => user.id === data.recipient._id )
+        user && socket.to(`${user.socketId}`).emit('typingToClient', data)
     })
 
     // Check user online / offline

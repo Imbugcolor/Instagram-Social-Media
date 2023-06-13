@@ -131,6 +131,7 @@ const SocketClient = () => {
     // Message 
     useEffect(() => {
         socket.on('addMessageToClient', msg => {
+            dispatch({type: MESS_TYPES.UPDATE_TYPING, payload: { _id: msg.sender, typing: false }})
             dispatch({type: MESS_TYPES.ADD_MESSAGE, payload: msg})
             dispatch({
                 type: MESS_TYPES.ADD_USER, 
@@ -151,6 +152,19 @@ const SocketClient = () => {
         })
 
         return () => socket.off('deleteMessagesToClient')
+    },[socket, dispatch])
+
+    //Typing Message 
+    useEffect(() => {
+        socket.on('typingToClient', data => {
+            dispatch({type: MESS_TYPES.UPDATE_TYPING, payload: { _id: data.sender._id, typing: true }})
+
+            setTimeout(() => {
+                dispatch({type: MESS_TYPES.UPDATE_TYPING, payload: { _id: data.sender._id, typing: false }})
+            }, 3000)
+        })
+
+        return () => socket.off('typingToClient')
     },[socket, dispatch])
 
     // Check user online / offline

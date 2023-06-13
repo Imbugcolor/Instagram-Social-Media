@@ -65,17 +65,17 @@ export const likeComment = ({comment, post, auth, socket}) => async (dispatch) =
         // Socket
         socket.emit('LikeComment', newPost)
 
-        // // Notify
-        // const msg = {
-        //     id: comment._id,
-        //     text: 'like your comment in a post.' ,
-        //     recipients: [comment.user._id],
-        //     url: `/post/${post._id}`,
-        //     content: post.content, 
-        //     image: post.images[0].url
-        // }
+        // Notify
+        const msg = {
+            id: comment._id,
+            text: 'like your comment in a post.' ,
+            recipients: [comment.user._id],
+            url: `/post/${post._id}?comment=${comment._id}`,
+            content: post.content, 
+            image: post.images[0].url
+        }
 
-        // dispatch(createNotify({msg, auth, socket}))
+        dispatch(createNotify({msg, auth, socket}))
 
     } catch (err) {
         dispatch({type: GLOBALTYPES.ALERT, payload: {error: err.response.data.msg}})     
@@ -97,15 +97,15 @@ export const unLikeComment = ({comment, post, auth, socket}) => async (dispatch)
         // Socket
         socket.emit('UnLikeComment', newPost)
 
-        // // Notify
-        // const msg = {
-        //     id: comment._id,
-        //     text: 'like your comment in a post.',
-        //     recipients: [comment.user._id],
-        //     url: `/post/${post._id}`,
-        // }
+        // Notify
+        const msg = {
+            id: comment._id,
+            text: 'like your comment in a post.',
+            recipients: [comment.user._id],
+            url: `/post/${post._id}?comment=${comment._id}`,
+        }
 
-        // dispatch(removeNotify({msg, auth, socket}))
+        dispatch(removeNotify({msg, auth, socket}))
     } catch (err) {
         dispatch({type: GLOBALTYPES.ALERT, payload: {error: err.response.data.msg}})     
     }

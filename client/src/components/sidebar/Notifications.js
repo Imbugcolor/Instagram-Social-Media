@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import Avatar from '../Avatar'
 import moment from 'moment'
 import { NOTIFY_TYPES, deleteAllNotifies, isReadNotify } from '../../redux/actions/notifyAction'
+import stylePopUpConfirm from '../alert/Confirm'
 
 const Notifications = ({setOpenNoti}) => {
 
@@ -22,9 +23,18 @@ const Notifications = ({setOpenNoti}) => {
     const handleDeleteAll = () => {
         const newArr = notify.data.filter(item => item.isRead === false)
         if(newArr.length === 0) return dispatch(deleteAllNotifies(auth.token))
-        if(window.confirm(`You have ${newArr.length} unread notices. Are you sure you want to delete all? `)){
-            return dispatch(deleteAllNotifies(auth.token))
-        }
+
+        stylePopUpConfirm.fire({
+            title: "Are you sure?",
+            text: `You have ${newArr.length} unread notices. Are you sure you want to delete all? `,
+            showCancelButton: true,
+            confirmButtonText: "OK",
+            cancelButtonText: 'Cancel',
+          }).then((result) => {
+            if (result.isConfirmed) {
+                return dispatch(deleteAllNotifies(auth.token))
+            } 
+          })
     }
 
     return (

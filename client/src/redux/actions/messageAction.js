@@ -5,6 +5,7 @@ export const MESS_TYPES = {
     ADD_USER: 'ADD_USER',
     ADD_MESSAGE: 'ADD_MESSAGE',
     GET_CONVERSATIONS: 'GET_CONVERSATIONS',
+    UPDATE_TYPING: 'UPDATE_TYPING',
     GET_MESSAGES: 'GET_MESSAGES',
     UPDATE_MESSAGES: 'UPDATE_MESSAGES',
     DELETE_MESSAGES: 'DELETE_MESSAGES',
@@ -32,7 +33,7 @@ export const getConversations = ({auth, page = 1}) => async(dispatch) => {
         res.data.conversations.forEach(item => {
             item.recipients.forEach(cv => {
                 if(cv._id !== auth.user._id){
-                    newArr.push({...cv, text: item.text, media: item.media, call: item.call })
+                    newArr.push({...cv, text: item.text, media: item.media, call: item.call, typing: false })
                 }
             })
         })

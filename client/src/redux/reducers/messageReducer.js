@@ -50,6 +50,17 @@ const messageReducer = (state = initialState, action) => {
                 resultUsers: action.payload.result,
                 firstLoad: true
             };
+        case MESS_TYPES.UPDATE_TYPING:
+            return {
+                ...state,
+                users: state.users.map(user => 
+                    user._id === action.payload._id ?
+                    {
+                        ...user,
+                        typing: action.payload.typing
+                    } : user
+                )
+            };
         case MESS_TYPES.GET_MESSAGES:
             return {
                 ...state,

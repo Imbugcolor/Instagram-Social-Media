@@ -15,6 +15,7 @@ import { BsTelephone } from 'react-icons/bs'
 import { HiOutlineVideoCamera } from 'react-icons/hi2'
 import { MdDeleteOutline } from 'react-icons/md'
 import stylePopUpConfirm from '../alert/Confirm'
+import Avatar from '../Avatar'
 
 const RightSide = () => {
     const { auth, message, theme, socket, peer } = useSelector(state => state)
@@ -207,6 +208,10 @@ const RightSide = () => {
         callUser({video: true})
     }
 
+    const handleTyping = () => {
+        socket.emit('typing', {sender: auth.user, recipient: user})
+    }
+
     return (
         <>
             <div className='message_header' style={{cursor: 'pointer'}}>
@@ -257,7 +262,18 @@ const RightSide = () => {
                             <img src={LoadIcon} alt='loading' style={{width: '28px', height: '28px'}}/>
                         </div>
                     }
+
+                    {
+                       user.typing && 
+                       <div className='user_typing'>
+                            <Avatar src={user.avatar} size='mess-avatar'/>
+                            <div className='typing_text'>
+                                <span>{user.fullname} is typing...</span>
+                            </div>
+                       </div>
+                    }
                 </div>
+                
             </div>
 
             <div className='show_media' style={{display: media.length > 0 ? 'grid' : 'none'}}>
@@ -280,6 +296,7 @@ const RightSide = () => {
                 <input type='text' 
                 placeholder='Enter you message...'
                 value={text} onChange={e => setText(e.target.value)}
+                onKeyPress={handleTyping}
                 style={{
                     filter: theme ? 'invert(1)' : 'invert(0)',
                     background: theme ? '#040404' : '',

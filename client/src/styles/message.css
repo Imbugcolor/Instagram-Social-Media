@@ -252,3 +252,24 @@
 .you_content:hover .unsend_msg {
     opacity: 1;
 }
+
+
+.user_typing  {
+    display: flex;
+    align-items: center;
+}
+
+.user_typing .typing_text {
+    font-size: 15px;
+    font-style: italic;
+    background: #eee;
+    color: #111;
+    border-radius: 14px 14px 14px 0;
+    padding: 9px 14px;
+    margin-left: 10px;
+    margin-bottom: 15px;
+}
+
+.user_typing .typing_text span {
+    color: #666666;
+}
