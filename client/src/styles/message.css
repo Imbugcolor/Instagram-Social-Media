@@ -85,6 +85,18 @@
     margin: 0px 7px;
 }
 
+/*------------ SHARE DISPLAY -------------*/
+.share_msg {
+    background: #efefef;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.share_msg .share__msg_header, .content__share p{
+    padding: 15px;
+}
+
 /*------------Chat Input--------------*/
 .chat_input {
     display: flex;

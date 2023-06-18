@@ -106,6 +106,12 @@ button:focus {
 /*------------- NOT FOUND -------------*/
 @import url('./not_found.css');
 
+/*------------- ACTIVE -------------*/
+@import url('./active.css');
+
+/*------------- SHARE MODALE -------------*/
+@import url('./share.css');
+
 /*------------- RESPONSIVE ------------*/
 @media (max-width: 1499px) {
     .content_app {

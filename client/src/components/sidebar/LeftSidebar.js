@@ -12,6 +12,7 @@ import { AiOutlineMenu } from 'react-icons/ai'
 import { GLOBALTYPES } from '../../redux/actions/globalTypes'
 import { logout } from '../../redux/actions/authAction'
 import { IoSearchOutline } from 'react-icons/io5'
+import { FiPlusSquare } from 'react-icons/fi'
 import SearchBar from './SearchBar'
 
 const LeftSidebar = () => {
@@ -70,11 +71,11 @@ const LeftSidebar = () => {
         <div className='header__side_bar'>
             <Link to='/'>
               <div className={`text__brand ${(openNoti || openSearch) && ' d-none'}`}>
-                <img src={textLogo} style={styleImg}/>
+                <img src={textLogo} style={styleImg} alt='logobrand'/>
               </div>
 
               <div className={`logo__brand ${(openNoti || openSearch) && ' d-block'}`}>
-                <img src={iconLogo} style={styleImg}/>
+                <img src={iconLogo} style={styleImg} alt='logobrand'/>
               </div>
             </Link>
         </div>
@@ -120,6 +121,17 @@ const LeftSidebar = () => {
                     Notifications
                   </span>
               </li>
+
+              <li className='menu__li' onClick={() => dispatch({ type: GLOBALTYPES.STATUS, payload: true})}>
+                  <div className='menu__icon'>
+                    <FiPlusSquare style={{fontSize: '30px', color: theme ? '#fff' : '#000', filter: theme ? 'invert(1)' : 'invert(0)'}}/>            
+                  </div>
+                  <span className={`title__menu ${(openNoti || openSearch) && ' d-none'}`} 
+                  style={{ color: theme ? '#fff' : '#000', filter: theme ? 'invert(1)' : 'invert(0)', fontWeight: 'normal'}}>
+                    Create
+                  </span>
+              </li>
+
               <li className='menu__li' onClick={handleCloseAll}>
                   <Link to={`/profile/${auth.user._id}`} style={{textDecoration: 'none', color: '#666666'}}>
                     <span style={{ marginRight: '15px' }}>

@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { deleteMessages } from '../../redux/actions/messageAction'
 import Times from './Times'
 import stylePopUpConfirm from '../alert/Confirm'
+import { Link } from 'react-router-dom'
 
 const MsgDisplay = ({user, msg, theme, data}) => {
   const { auth, socket } = useSelector(state => state)
@@ -55,6 +56,30 @@ const MsgDisplay = ({user, msg, theme, data}) => {
                               }
                           </div>
                         ))
+                      }
+
+                      {
+                        msg.share && 
+                        <Link to={`/post/${msg.share._id}`} style={{textDecoration: 'none', color: '#000'}}>
+                          <div className='share_msg'>
+                              <div className='share__msg_header'>
+                                  <Avatar src={msg.share.user.avatar} size='medium-avatar' alt='avatar'/>
+                                  <span className='ml-2'>{msg.share.user.username}</span>
+                              </div>
+                              <div>
+                                {
+                                  msg.share.images[0].url.match(/video/i) ?
+                                  videoShow(msg.share.images[0].url, theme)
+                                  : <img src={msg.share.images[0].url} alt='images' 
+                                      style={{filter:  theme ? 'invert(1)' : 'invert(0)', maxWidth: '100%', height: 'auto', objectFit: 'cover', verticalAlign: 'middle'}}
+                                    />
+                                }
+                              </div>
+                              <div className='content__share'>
+                                  <p>{msg.share.content}</p>
+                              </div>
+                          </div>
+                        </Link>
                       }
                   </div>
                   

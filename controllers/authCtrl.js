@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { OAuth2Client } = require("google-auth-library")
 const fetch = require('node-fetch')
+const sendMail = require('../config/sendMail')
 
 const client = new OAuth2Client(
     `${process.env.GOOGLE_CLIENT_ID}`,
@@ -14,11 +15,16 @@ const clientID = `${process.env.GITHUB_CLIENT_ID}`
 
 const clientSecret = `${process.env.GITHUB_CLIENT_SECRET}`
 
+const CLIENT_URL = `${process.env.CLIENT_URL}`
+
 const authCtrl = {
     register: async(req, res) => {
         try {
             const { fullname, username, email, password, gender } = req.body
+
             let newUserName = username.toLowerCase().replace(/ /g, '')
+
+            if(!validateEmail(email)) return res.status(400).json({msg: 'Email is not valid.'})
 
             const user_name = await Users.findOne({username: newUserName})
             if(user_name) return res.status(400).json({msg: 'This user name already exists.'}) 
@@ -26,35 +32,68 @@ const authCtrl = {
             const user_email = await Users.findOne({email})
             if(user_email) return res.status(400).json({msg: 'This email already exists.'})
 
-            if(password.length < 6)
-            return res.status(400).json({msg: "Password must be at least 6 characters."})
+            if(password.length < 6) return res.status(400).json({msg: "Password must be at least 6 characters."})
 
             const passwordHash = await bcrypt.hash(password, 12)
 
-            const newUser = new Users({
-                fullname, username: newUserName, email, password: passwordHash, gender
-            })
+            const newUser = { fullname, username, email, password: passwordHash, gender }
 
-            const access_token = createAccessToken({id: newUser._id})
-            const refresh_token = createRefreshToken({id: newUser._id})
+            const active_token = generateActiveToken({newUser})
+            
+            const url = `${CLIENT_URL}/active/${active_token}`
+            
 
-            res.cookie('refreshtoken', refresh_token, {
-                httpOnly: true,
-                path: '/api/refresh_token',
-                maxAge: 30 * 24 * 60 * 60 * 1000
-            })
+            sendMail(email, url, 'Active your Vyviegram account.')
+
+            // const newUser = new Users({
+            //     fullname, username: newUserName, email, password: passwordHash, gender
+            // })
+
+            // const access_token = createAccessToken({id: newUser._id})
+            // const refresh_token = createRefreshToken({id: newUser._id})
+
+            // res.cookie('refreshtoken', refresh_token, {
+            //     httpOnly: true,
+            //     path: '/api/refresh_token',
+            //     maxAge: 30 * 24 * 60 * 60 * 1000
+            // })
           
-            await newUser.save()
+            // await newUser.save()
 
-            res.json({
-                msg: 'Register Success!',
-                access_token, 
-                user: {
-                    ...newUser._doc,
-                    password: ''
-                }
-            })
+            // res.json({
+            //     msg: 'Register Success!',
+            //     access_token, 
+            //     user: {
+            //         ...newUser._doc,
+            //         password: ''
+            //     }
+            // })
 
+            return res.json({ msg: 'Register Success! Please check your email to active your account.' })
+
+        } catch (err) {
+            return res.status(500).json({msg: err.message})
+        }
+    },
+    activeAccount: async (req, res) => {
+        try {
+            const { active_token } = req.body
+
+            const decoded = jwt.verify(active_token, `${process.env.ACTIVE_TOKEN_SECRET}`)
+
+            const { newUser } = decoded 
+
+            if(!newUser) return res.status(400).json({msg: 'Invalid authentication.'})
+
+            const user = await Users.findOne({email: newUser.email})
+            if(user) return res.status(400).json({msg: 'Account already exists.'})
+           
+            const new_user = new Users(newUser)
+
+            await new_user.save()
+
+            res.json({msg: 'Account has been activated!'})
+        
         } catch (err) {
             return res.status(500).json({msg: err.message})
         }
@@ -249,6 +288,10 @@ const createRefreshToken = (payload) => {
     return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '30d'})
 }
 
+const generateActiveToken = (payload) => {
+    return jwt.sign(payload, process.env.ACTIVE_TOKEN_SECRET, {expiresIn: '5m'})
+}
+
 const loginUser = async (user, password, res) => {
    
     const isMatch = await bcrypt.compare(password, user.password)
@@ -303,6 +346,16 @@ const registerUser = async (user, res) => {
             password: ''
         }
     })
+}
+
+const validateEmail = (email) => {
+    const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (email.match(mailformat)) {
+      return true;
+    }
+    else {
+      return false;
+    }
 }
 
 module.exports = authCtrl

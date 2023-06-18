@@ -4,6 +4,8 @@ const passport = require('passport')
 
 router.post('/register', authCtrl.register)
 
+router.post('/active', authCtrl.activeAccount)
+
 router.post('/login', authCtrl.login)
 
 router.post('/google_login', authCtrl.googleLogin)

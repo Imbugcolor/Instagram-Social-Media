@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { likePost, unLikePost, savePost, unSavePost } from '../../../redux/actions/postAction'
 import ShareModal from '../../ShareModal'
 import { BASE_URL } from '../../../utils/config'
+import { GLOBALTYPES } from '../../../redux/actions/globalTypes'
 
 const CardFooter = ({post}) => {
   const [isLike, setIsLike] = useState(false)
@@ -65,6 +66,11 @@ const CardFooter = ({post}) => {
       setSaveLoad(false)
   }
 
+  //Share 
+  const handleSharePost = () => {
+      dispatch({ type: GLOBALTYPES.SHARE, payload: { post }})
+  }
+
   return (
     <div className='card_footer'>
         <div className='card_icon_menu'>
@@ -77,7 +83,7 @@ const CardFooter = ({post}) => {
                 <Link to={`/post/${post._id}`} className='text-dark'>
                     <i className='far fa-comment' />
                 </Link>
-                <img src={Send} alt='Send' onClick={() => setIsShare(!isShare)}/>
+                <img src={Send} alt='Send' onClick={handleSharePost}/>
             </div>
 
             {
@@ -96,10 +102,10 @@ const CardFooter = ({post}) => {
               {post.comments.length} comments
             </h6>
         </div>
-        {
+        {/* {
           isShare &&
           <ShareModal url={`${BASE_URL}/post/${post._id}`} theme={theme}/>
-        }
+        } */}
     </div>
   )
 }

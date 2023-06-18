@@ -94,3 +94,32 @@ export const deleteConversation = ({auth, id}) => async (dispatch) => {
         dispatch({type: GLOBALTYPES.ALERT, payload: {error: err.response.data.msg}})    
     }
 }
+
+export const shareToMess = ({post, usersShare, shareMsg, auth, socket}) => async(dispatch) => {
+
+    const msg = {
+        sender: auth.user._id,
+        text: shareMsg ? shareMsg : 'has share you the files.',
+        media: [],
+        share: post,
+        createdAt: new Date().toISOString()
+    }
+
+    const { _id, avatar, fullname, username } = auth.user
+   
+    try {
+
+        dispatch({type: GLOBALTYPES.ALERT, payload: { loading: true }})
+
+        await Promise.all(usersShare.map(async(item) => {
+            const res = await postDataAPI('message', {...msg, recipient: item._id}, auth.token)
+            dispatch({type: MESS_TYPES.ADD_MESSAGE, payload: res.data.newMsg})
+            socket.emit('addMessage', {...res.data.newMsg, user: {_id, avatar, fullname, username}})
+        }))
+
+        dispatch({type: GLOBALTYPES.ALERT, payload: { success: 'Send success.'}})
+
+    } catch (err) {
+        dispatch({type: GLOBALTYPES.ALERT, payload: { error: err.response.data.msg }})
+    }
+}

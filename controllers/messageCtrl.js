@@ -20,7 +20,7 @@ class APIfeatures {
 const messageCtrl = {
     createMessage: async (req, res) => {
         try {
-            const { sender, recipient, text, media, call } = req.body
+            const { sender, recipient, text, media, call, share } = req.body
 
             if( !recipient || (!text.trim() && media.length === 0 && !call )) return;
  
@@ -37,7 +37,7 @@ const messageCtrl = {
             const newMessage = new Messages({
                 conversation: newConversation._id,
                 sender, call,
-                recipient, text, media
+                recipient, text, media, share
             })
 
             await newMessage.save()

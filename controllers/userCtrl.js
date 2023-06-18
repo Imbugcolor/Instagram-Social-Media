@@ -1,4 +1,7 @@
 const Users = require('../models/userModel')
+const Comments = require('../models/commentModel')
+const Posts = require('../models/postModel')
+const Notifies = require('../models/notifyModel')
 
 const userCtrl = {
     searchUser: async (req, res) => {
@@ -33,6 +36,41 @@ const userCtrl = {
             })
 
             res.json({msg: 'Update Success!'})
+            
+        } catch (err) {
+            return res.status(500).json({msg: err.message})
+        }
+    },
+    updateUser: async (req, res) => {
+        try {
+            const { avatar, fullname, mobile, address, story, website, gender } = req.body
+            if(!fullname) return res.status(400).json({msg: "Please add your full name."})
+
+            await Users.findOneAndUpdate({_id: req.user._id}, {
+                avatar, fullname, mobile, address, story, website, gender
+            })
+
+            res.json({msg: 'Update Success!'})
+            
+        } catch (err) {
+            return res.status(500).json({msg: err.message})
+        }
+    },
+    removeUser: async (req, res) => {
+        try {
+            await Users.findOneAndDelete({_id: req.params.id})
+
+            await Posts.deleteMany({user: req.params.id})
+
+            await Comments.deleteMany({user: req.params.id})
+
+            await Notifies.deleteMany({user: req.params.id})
+
+            res.clearCookie('refreshtoken', {
+                path: '/api/refresh_token'
+            })
+
+            return res.json({msg: 'User has removed.'})
             
         } catch (err) {
             return res.status(500).json({msg: err.message})

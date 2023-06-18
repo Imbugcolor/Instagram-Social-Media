@@ -15,6 +15,7 @@ import message from './messageReducer'
 import online from './onlineReducer'
 import call from './callReducer'
 import peer from './peerReducer'
+import share from './shareReducer'
 
 export default combineReducers({
     auth,
@@ -32,5 +33,6 @@ export default combineReducers({
     message,
     online,
     call,
-    peer
+    peer,
+    share
 })

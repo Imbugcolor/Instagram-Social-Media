@@ -22,10 +22,12 @@ import { getNotifies } from './redux/actions/notifyAction';
 import CallModal from './components/message/CallModal';
 import Peer from 'peerjs'
 import LeftSidebar from './components/sidebar/LeftSidebar';
+import Active from './pages/active/[id]';
+import ShareModal from './components/ShareModal';
 
 
 function App() {
-  const { auth, status, modal, call } = useSelector(state => state)
+  const { auth, status, modal, call, share } = useSelector(state => state)
   const  dispatch = useDispatch()
 
   // joinUser
@@ -82,9 +84,11 @@ function App() {
             { status && <StatusModal /> }
             { auth.token && <SocketClient />}
             { call && <CallModal />}
+            { share && <ShareModal />}
             <Routes>
                 <Route exact path='/' Component={auth.token ? Home : Login}/>
                 <Route exact path='/register' Component={Register} />
+                <Route exact path='/active/:id' Component={Active} />
                 <Route exact path='/:page' element={<PrivateRouter component={PageRender}/>}/>
                 <Route exact path='/:page/:id' element={<PrivateRouter component={PageRender}/>}/>
             </Routes>

@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { checkImage } from '../../utils/imageUpload'
 import { GLOBALTYPES } from '../../redux/actions/globalTypes'
 import { updateProfileUser } from '../../redux/actions/profileAction'
+import { getDataAPI } from '../../utils/fetchData'
+import { useNavigate } from 'react-router-dom'
 
 const Edit = () => {
 
@@ -17,6 +19,8 @@ const Edit = () => {
     const { auth, theme } = useSelector(state => state)
     const dispatch = useDispatch()
     const inputRef = useRef()
+
+    const navigate = useNavigate()
 
     useEffect(() => {
         setUserData(auth.user)
@@ -40,6 +44,16 @@ const Edit = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
         dispatch(updateProfileUser({userData, avatar, auth}))
+    }
+
+    const handleDeleteAccount = async() => {
+        try {
+            const res = await getDataAPI(`delete_account/${auth.user._id}`, auth.token)
+            dispatch({type: GLOBALTYPES.ALERT, payload: { success: res.data.msg }})
+            navigate('/')
+        } catch (err) {
+            dispatch({type: GLOBALTYPES.ALERT, payload: { error: err.response.data.msg }})
+        }
     }
 
     return (
@@ -112,9 +126,12 @@ const Edit = () => {
                     </div>
                 </div>
 
+                <span onClick={handleDeleteAccount}>Delete Account</span>
+
                 <button className='save_btn'>
                     Save
                 </button>
+
             </form>
         </div>
     )
