@@ -4,6 +4,8 @@ import LoadIcon from '../../images/loading.gif'
 import LoadMoreBtn from '../LoadMoreBtn'
 import { getDataAPI } from '../../utils/fetchData'
 import { GLOBALTYPES } from '../../redux/actions/globalTypes'
+import { HiOutlineCamera } from 'react-icons/hi2'
+import { useParams } from 'react-router-dom'
 
 const Saved = ({auth, dispatch}) => {
 
@@ -11,22 +13,24 @@ const Saved = ({auth, dispatch}) => {
   const [result, setResult] = useState(9)
   const [page, setPage] = useState(2)
   const [load, setLoad] = useState(false)
+  const { id } = useParams()
 
   useEffect(() => {
-     setLoad(true)
-     getDataAPI('getSavePosts', auth.token)
-     .then(res => {
-        setSavePosts(res.data.savePosts)
-        setResult(res.data.result)
-        setLoad(false)
-     })
-     .catch(err => {
-        dispatch({type: GLOBALTYPES.ALERT, payload: {error: err.response.data.msg}})
-     })
+      if(auth.user._id !== id) return;
+      setLoad(true)
+      getDataAPI('getSavePosts', auth.token)
+      .then(res => {
+          setSavePosts(res.data.savePosts)
+          setResult(res.data.result)
+          setLoad(false)
+      })
+      .catch(err => {
+          dispatch({type: GLOBALTYPES.ALERT, payload: {error: err.response.data.msg}})
+      })
 
-     return () => setSavePosts([])
+      return () => setSavePosts([])
      
-  },[auth.token, dispatch])
+  },[auth.token, dispatch, id, auth.user._id])
 
   const handleLoadMore = async () => {
       setLoad(true)
@@ -36,6 +40,15 @@ const Saved = ({auth, dispatch}) => {
       setPage(page + 1)
       setLoad(false)
   }
+
+  if(auth.user._id !== id) return(
+    <div className='no_posts'>
+        <div className='no__posts_icon'>
+            <HiOutlineCamera />
+        </div>
+        <h2 className='text-center'>Account is private</h2>
+    </div>
+  )
 
   return (
     <div>

@@ -6,6 +6,7 @@ import Avatar from '../Avatar'
 import moment from 'moment'
 import { NOTIFY_TYPES, deleteAllNotifies, isReadNotify } from '../../redux/actions/notifyAction'
 import stylePopUpConfirm from '../alert/Confirm'
+import { FaPhotoVideo } from 'react-icons/fa'
 
 const Notifications = ({setOpenNoti}) => {
 
@@ -75,9 +76,16 @@ const Notifications = ({setOpenNoti}) => {
                                         msg.content && <small>{msg.content.slice(0,20)}...</small>
                                     }
                                 </div>
-                                <div style={{width: '30px'}}>
-                                    {msg.image && <Avatar src={msg.image} size='medium-avatar' />}
-                                </div>
+                                {
+                                    msg.image && 
+                                    <div style={{width: '30px'}}>
+                                        {
+                                        
+                                            msg.image.match(/video/i) ? <FaPhotoVideo /> :
+                                            <Avatar src={msg.image} size='medium-avatar' />
+                                        }
+                                    </div>
+                                }
                             </Link>
                             <small className='text-muted d-flex justify-content-between px-2'>
                                 {moment(msg.createdAt).fromNow()}

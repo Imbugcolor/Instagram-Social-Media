@@ -99,7 +99,7 @@ export const shareToMess = ({post, usersShare, shareMsg, auth, socket}) => async
 
     const msg = {
         sender: auth.user._id,
-        text: shareMsg ? shareMsg : 'has share you the files.',
+        text: shareMsg ? shareMsg : '📝',
         media: [],
         share: post,
         createdAt: new Date().toISOString()

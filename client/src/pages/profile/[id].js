@@ -26,13 +26,12 @@ const Profile = () => {
     <div className='profile'>
        
         <Info auth={auth} profile={profile} dispatch={dispatch} id={id} />
-        {
-          auth.user._id === id &&
-          <div className='profile_tab'>
-              <button className={saveTab ? '' : 'active'} onClick={() => setSaveTab(false)}><BsSignpostSplit /> Posts</button>
-              <button className={saveTab ? 'active' : ''} onClick={() => setSaveTab(true)}><BsBookmark /> Saved</button>
-          </div>
-        }
+        
+        <div className='profile_tab'>
+            <button className={saveTab ? '' : 'active'} onClick={() => setSaveTab(false)}><BsSignpostSplit /> Posts</button>
+            <button className={saveTab ? 'active' : ''} onClick={() => setSaveTab(true)}><BsBookmark /> Saved</button>
+        </div>
+        
         {
           profile.loading ? <img className='d-block mx-auto my-4' src={LoadIcon} alt='loading'/> :  
           <>

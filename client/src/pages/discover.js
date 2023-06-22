@@ -16,14 +16,15 @@ const Discover = () => {
     if(!discover.firstLoad) {
       dispatch(getDiscoverPosts(auth.token))
     }
-  },[dispatch, auth.token])
+  },[dispatch, auth.token, discover.firstLoad])
 
   const handleLoadMore = async () => {
     setLoad(true)
     const res = await getDataAPI(`post_discover?num=${discover.page * 9}`, auth.token)
-    dispatch({type: DISCOVER_TYPES.GET_POSTS, payload: res.data})
+    dispatch({ type: DISCOVER_TYPES.UPDATE_POST, payload: res.data })
     setLoad(false)
   }
+
 
   return (
     <div>

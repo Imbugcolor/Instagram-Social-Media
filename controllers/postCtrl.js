@@ -184,7 +184,7 @@ const postCtrl = {
             const posts = await Posts.aggregate([
                 { $match: {user: {$nin: newArr}}},
                 { $sample: { size: Number(num) }}, 
-            ])
+            ]).sort('-createdAt')
 
             return res.json({
                 msg: 'Success!',

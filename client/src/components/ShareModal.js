@@ -75,17 +75,22 @@ const ShareModal = () => {
           } else {
                setUserChosen(userChosen.filter((item) => item._id !== value ))
           }
-      }
+     }
+
+     const handleDeleteResult = (id) => {
+          setUserChosen(userChosen.filter((item) => item._id !== id ))
+     }
 
      const handleSend = async () => {
 
           await dispatch(shareToMess({post: share.post, usersShare: userChosen, shareMsg, auth, socket}))
 
           setSearch('')
-          setUsers([]) 
+          setUsers(auth.user.following)
           setUserChosen([])   
 
      }
+
 
      return (
           <div className='share_modal'>
@@ -101,7 +106,7 @@ const ShareModal = () => {
                               userChosen.map(item => (
                                    <div key={item._id} className='result__input'>
                                         <span className='result__input_name'>{item.username}</span>
-                                        <span className='close_result'>&times;</span>
+                                        <span className='close_result' onClick={() => handleDeleteResult(item._id)}>&times;</span>
                                    </div>
                               ))
                          }
@@ -112,46 +117,74 @@ const ShareModal = () => {
                     </div>
 
                     <div className='search__new_container'>
-                    {
-                    load ? 
-                    <div className='load__search'>
-                         <img src={LoadIcon} alt='loading'/>
-                    </div> :
-                   
-                    <div className='search__new_result'>
-                         <h6 style={{ padding: '0 25px', color: '#666666' }}>Suggested</h6>
                          {
-                              users.length ?
-                              users.map(user => (
-                                   <div className='search__item_result' key={user._id} style={{background: `${userChosen._id === user._id ? '#efefef' : '#fff'}`}}>
-                                        <label className='d-flex align-item-center' htmlFor={user._id} style={{cursor: 'pointer'}}>
-                                             <Avatar src={user.avatar} size='big-avatar'/>
-                                             <div className='ml-2' style={{transform: 'translateY(-2px)'}}>
-                                                  <span className='d-block' style={{color: '#262626', fontWeight: '500'}}>{user.username}</span>
-                                             
-                                                  <small style={{ color: '#666666'}}>
-                                                       {user.fullname}
-                                                  </small>
-                                             </div>
-     
-                                             <div className="user-check">
-                                                  <input type="checkbox" 
-                                                       name={user.username} 
-                                                       id={user._id} 
-                                                       value={user._id}                                          
-                                                       onChange={handleUserCheckbox} 
-                                                       checked={userChosen.some(item => item._id === user._id)} 
-                                                  />
-                                             </div>
-                                        </label>
+                         load ? 
+                         <div className='load__search'>
+                              <img src={LoadIcon} alt='loading'/>
+                         </div> :
+                    
+                         <div className='search__new_result'>
+                              <h6 style={{ padding: '0 25px', color: '#666666' }}>Suggested</h6>
+                              {
+                                   users.length ?
+                                   users.map(user => (
+                                        <div className='search__item_result' key={user._id} style={{background: `${userChosen._id === user._id ? '#efefef' : '#fff'}`}}>
+                                             <label className='d-flex align-item-center' htmlFor={user._id} style={{cursor: 'pointer'}}>
+                                                  <Avatar src={user.avatar} size='big-avatar'/>
+                                                  <div className='ml-2' style={{transform: 'translateY(-2px)'}}>
+                                                       <span className='d-block' style={{color: '#262626', fontWeight: '500'}}>{user.username}</span>
+                                                  
+                                                       <small style={{ color: '#666666'}}>
+                                                            {user.fullname}
+                                                       </small>
+                                                  </div>
+          
+                                                  <div className="user-check">
+                                                       <input type="checkbox" 
+                                                            name={user.username} 
+                                                            id={user._id} 
+                                                            value={user._id}                                          
+                                                            onChange={handleUserCheckbox} 
+                                                            checked={userChosen.some(item => item._id === user._id)} 
+                                                       />
+                                                  </div>
+                                             </label>
+                                        </div>
+                                   ))
+                                   : <div className='text-center'>
+                                        <span>No Result</span>
                                    </div>
-                              ))
-                              : <div className='text-center'>
-                                   <span>No Result</span>
-                              </div>
+                              }
+                         </div>
                          }
                     </div>
-                    }
+
+                    <div className='share__social_media d-flex justify-content-between px-4 py-2'
+                         style={{filter: theme ? 'invert(1)':'invert(0)'}
+                    }>
+                         <FacebookShareButton url={url}>
+                              <FacebookIcon round={true} size={32} />
+                         </FacebookShareButton>
+
+                         <TwitterShareButton url={url}>
+                              <TwitterIcon round={true} size={32} />
+                         </TwitterShareButton>
+
+                         <EmailShareButton url={url}>
+                              <EmailIcon round={true} size={32} />
+                         </EmailShareButton>
+
+                         <RedditShareButton url={url}>
+                              <RedditIcon round={true} size={32} />
+                         </RedditShareButton>
+
+                         <TelegramShareButton url={url}>
+                              <TelegramIcon round={true} size={32} />
+                         </TelegramShareButton>
+
+                         <WhatsappShareButton url={url}>
+                              <WhatsappIcon round={true} size={32} />
+                         </WhatsappShareButton>
                     </div>
 
                     {
@@ -165,34 +198,9 @@ const ShareModal = () => {
                     <button className='new__chat_btn' disabled={userChosen.length === 0} style={{opacity: `${userChosen.length > 0 ? 1 : 0.5}`}}
                     onClick={handleSend}>Send</button>
                     </div>
+              
                </div>
                      
-               {/* <div className='d-flex justify-content-between px-4 py-2'
-               style={{filter: theme ? 'invert(1)':'invert(0)'}}>
-                    <FacebookShareButton url={url}>
-                         <FacebookIcon round={true} size={32} />
-                    </FacebookShareButton>
-
-                    <TwitterShareButton url={url}>
-                         <TwitterIcon round={true} size={32} />
-                    </TwitterShareButton>
-
-                    <EmailShareButton url={url}>
-                         <EmailIcon round={true} size={32} />
-                    </EmailShareButton>
-
-                    <RedditShareButton url={url}>
-                         <RedditIcon round={true} size={32} />
-                    </RedditShareButton>
-
-                    <TelegramShareButton url={url}>
-                         <TelegramIcon round={true} size={32} />
-                    </TelegramShareButton>
-
-                    <WhatsappShareButton url={url}>
-                         <WhatsappIcon round={true} size={32} />
-                    </WhatsappShareButton>
-               </div> */}
           </div>
      )
 }
