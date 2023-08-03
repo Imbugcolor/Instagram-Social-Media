@@ -4,17 +4,13 @@ import Send from '../../../images/send.svg'
 import LikeButton from '../../LikeButton'
 import { useSelector, useDispatch } from 'react-redux'
 import { likePost, unLikePost, savePost, unSavePost } from '../../../redux/actions/postAction'
-import ShareModal from '../../ShareModal'
-import { BASE_URL } from '../../../utils/config'
 import { GLOBALTYPES } from '../../../redux/actions/globalTypes'
 
 const CardFooter = ({post}) => {
   const [isLike, setIsLike] = useState(false)
   const [loadLike, setLoadLike] = useState(false)
 
-  const [isShare, setIsShare] = useState(false)
-
-  const { auth, theme, socket } = useSelector(state => state)
+  const { auth, socket } = useSelector(state => state)
   const dispatch = useDispatch()
 
   const [saved, setSaved] = useState(false)
